@@ -1,5 +1,6 @@
 package com.acme.dbo.config;
 
+import com.acme.dbo.client.domain.Client;
 import com.acme.dbo.config.metrics.HttpMetricsTracker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -121,6 +123,11 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter {
     public PoolClosingLiquibaseFinishedListener liquibaseDbUpdateFinishedListener() {
         log.debug("Liquibase finished updating db. Handling this event with PoolClosingLiquibaseFinishedListener...");
         return new PoolClosingLiquibaseFinishedListener();
+    }
+
+    @Bean
+    BeanPropertyRowMapper<Client> clientBeanPropertyRowMapper() {
+        return new BeanPropertyRowMapper<>(Client.class);
     }
 
     static class PoolClosingLiquibaseFinishedListener {
